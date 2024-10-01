@@ -1,24 +1,17 @@
 import pytest
-import configparser
-import pathlib
 import mysql.connector
+from db_conn import DBConn
 
-from acceso_a_datos.dao.magical_creatures.magical_creature_dao import MagicalCreatureDAO
+from magical_creature_dao import MagicalCreatureDAO
 from magical_creature import MagicalCreature
 from mysql.connector import errorcode
 
 @pytest.fixture(scope="module")
-def db_conn():
-    config=configparser.ConfigParser()
-    config_path = pathlib.Path(__file__).parent.absolute() / "test_config.ini"
-    config.read(config_path)
-    db_config= config['database']
+def conn():
+    db_conn=DBConn("test_config.ini")
+    conn=db_conn.connect_to_mysql()
+
     try: 
-        conn= mysql.connector.connect(
-            user=db_config.get('user'),
-            password=db_config.get('password'),
-            host=db_config.get('host'),
-        )
           
         with conn.cursor() as cursor:
             # Crear la base de datos si no existe
@@ -46,15 +39,16 @@ def db_conn():
     return None
 
 class TestMagicalCreatureDao:
-    def test_get_success(self, db_conn):
+    def test_get_success(self, conn):
        
         # Insertar un registro de prueba
-        with db_conn.cursor() as cursor:
+        with conn.cursor() as cursor:
             cursor.execute("INSERT INTO test_creatures.creatures (name, lives, magic_power) VALUES ('Test Creature', 100, 50)")
-            db_conn.commit()
+            conn.commit()
             inserted_id = cursor.lastrowid
 
-        dao = MagicalCreatureDAO('test_config.ini')
+        db_conn=DBConn("test_config.ini")
+        dao = MagicalCreatureDAO(db_conn)
         result = dao.get(inserted_id)
 
         assert result is not None

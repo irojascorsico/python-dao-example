@@ -1,5 +1,5 @@
 from magical_creature import MagicalCreature
-from acceso_a_datos.dao.magical_creatures.magical_creature_dao import MagicalCreatureDAO
+from magical_creature_dao import MagicalCreatureDAO
 
 # Creamos una base de datos SQLite para criaturas mágicas
 dao = MagicalCreatureDAO('config.ini')

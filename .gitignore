@@ -1,0 +1,9 @@
+# Carpetas de entorno virtual (por ejemplo, creadas con venv o virtualenv)
+venv/
+env/
+myenv/
+
+# Archivos temporales (por ejemplo, archivos .pyc, .pyo, .swp, .DS_Store, etc.)
+*.pyc
+*.pyo
+.DS_Store
